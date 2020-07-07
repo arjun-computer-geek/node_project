@@ -9,11 +9,11 @@ const sendEmail = async options => {
             user: process.env.EMAIL_USERNAME,
             pass: process.env.EMAIL_PASSWORD
         }
-    })
+    });
 
     // 2.) Define the email options
     const mailOptions = {
-        from: 'Arjun <arjun2000raj@gmail.com>',
+        from: 'Arjun <hello@arjun.io>',
         to: options.email,
         subject: options.subject,
         text: options.message
@@ -22,5 +22,6 @@ const sendEmail = async options => {
 
     // 3.) Actually send the email
     await transporter.sendMail(mailOptions);
-}
+};
+
 module.exports = sendEmail;
