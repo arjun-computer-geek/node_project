@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 
 const AppError = require('./utilities/appError');
 const tourRouter = require('./routes/tourRoutes');
@@ -11,6 +13,7 @@ const globleErrorHandler = require('./controllers/errorController');
 const app = express();
 
 //1) GLOBAL MIDDLEWARES
+
 //set HTPP headers
 app.use(helmet());
 
@@ -29,6 +32,11 @@ app.use('/api', limiter);
 //Body Parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
 
+// Data Sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+//Date sanitization against XSS
+app.use(xss());
 //Serving static file
 app.use(express.static(`${__dirname}/public`));
 
