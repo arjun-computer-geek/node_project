@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -6,14 +7,19 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 
+
 const AppError = require('./utilities/appError');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const globleErrorHandler = require('./controllers/errorController');
 
 const app = express();
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
 //1) GLOBAL MIDDLEWARES
+//Serving static file
+app.use(express.static(path.join(__dirname, 'public')));
 
 //set HTPP headers
 app.use(helmet());
@@ -51,8 +57,7 @@ app.use(hpp({
     ]
 }));
 
-//Serving static file
-app.use(express.static(`${__dirname}/public`));
+
 
 // Test middleware
 app.use((req, res, next) => {
@@ -62,6 +67,12 @@ app.use((req, res, next) => {
 });
 
 //3) ROUTS
+app.get('/', (req, res) =>{
+    res.status(200).render('base', {
+        tour: 'The forest Hicker',
+        users: 'Arjun'
+    });
+})
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
